@@ -79,12 +79,12 @@ class Controller:
         sinewave = math.sin(t*2*math.pi)
         coswave = math.cos(t*2*math.pi)
         input_angles = np.append(self.current_angle, sinewave)
-        #input_angles = np.append(input_angles, -coswave)
+        input_angles = np.append(input_angles, coswave)
         current_angles = self.ann.activate(input_angles)
         # Current theory is that the for loop makes the program to slow to do NEAT
         for i in range(len(current_angles)):
             if i % 3 == 0:
-                current_angles[i] = (current_angles[i] * 1.5708) - (1.5708 / 2)
+                current_angles[i] = (current_angles[i] * 2) - (2 / 2)
             elif i % 3 == 1:
                 current_angles[i] = current_angles[i] * 0.63
             else:

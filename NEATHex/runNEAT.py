@@ -69,7 +69,7 @@ def runNeat(gens):
     return winner
 
 if __name__ == '__main__':
-    winner = runNeat(100)
+    winner = runNeat(2)
     winner_net = neat.nn.RecurrentNetwork.create(winner, config)
 
     print('\nBest genome:\n{!s}'.format(winner))
