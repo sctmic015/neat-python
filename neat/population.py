@@ -2,6 +2,7 @@
 
 from neat.math_util import mean
 from neat.reporting import ReporterSet
+import time
 
 
 class CompleteExtinctionException(Exception):
@@ -85,6 +86,7 @@ class Population(object):
 
             # Evaluate all genomes using the user-provided function.
             fitness_function(list(self.population.items()), self.config)
+           # time.sleep(10)
 
             # Gather and report statistics.
             best = None

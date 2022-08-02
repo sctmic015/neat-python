@@ -41,3 +41,6 @@ winner_net = neat.nn.FeedForwardNetwork.create(winner, config)
 for xi, xo in zip(xor_inputs, xor_outputs):
     output = winner_net.activate(xi)
     print("  input {!r}, expected output {!r}, got {!r}".format(xi, xo, output))
+
+print("Test")
+print(p.best_genome)
