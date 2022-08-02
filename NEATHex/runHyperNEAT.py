@@ -21,7 +21,7 @@ def evaluate_gait_parallel(genome, config, duration = 5):
     # Set up controller
     try:
         controller = Controller(leg_params, body_height=0.15, velocity=0.9, period=1.0, crab_angle=-np.pi / 6,
-                                ann=net)
+                                ann=net, activations=ACTIVATIONS)
     except:
         return 0, np.zeros(6)
     # Initialise Simulator
@@ -87,7 +87,7 @@ def run(gens):
 
 
 if __name__ == '__main__':
-    WINNER = run(20)[0]  # Only relevant to look at the winner.
+    WINNER = run(300)[0]  # Only relevant to look at the winner.
     print("This is the winner!!!")
     print(type(WINNER))
     print('\nBest genome:\n{!s}'.format(WINNER))
@@ -100,7 +100,7 @@ if __name__ == '__main__':
     WINNER_NET = create_phenotype_network(CPPN, SUBSTRATE)
 
     # Create and run controller
-    controller = Controller(tripod_gait, body_height=0.15, velocity=0.46, crab_angle=-1.57, ann=WINNER_NET)
+    controller = Controller(tripod_gait, body_height=0.15, velocity=0.46, crab_angle=-1.57, ann=WINNER_NET, activations=ACTIVATIONS)
     simulator = Simulator(controller, follow=True, visualiser=True, collision_fatal=False, failed_legs=[0])
 
     with open('hyperneat_xor_cppn.pkl', 'wb') as output:

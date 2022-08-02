@@ -30,8 +30,9 @@ stationary = [0.18, 0, 0, 0, 0] * 6
 
 class Controller:
 
-    def __init__(self, params=tripod_gait, crab_angle=0.0, body_height=0.14, period=1.0, velocity=0.1, dt=1 / 240, ann = None, printangles = False):
+    def __init__(self, params=tripod_gait, crab_angle=0.0, body_height=0.14, period=1.0, velocity=0.1, dt=1 / 240, ann = None, printangles = False, activations = 2):
         # link lengths
+        self.activations = activations
         self.ann = ann
         self.l_1 = 0.05317
         self.l_2 = 0.10188
@@ -80,11 +81,12 @@ class Controller:
         coswave = math.cos(t*2*math.pi)
         input_angles = np.append(self.current_angle, sinewave)
         input_angles = np.append(input_angles, coswave)
-        current_angles = self.ann.activate(input_angles)
+        for i in range(self.activations):
+            current_angles = self.ann.activate(input_angles)
         # Current theory is that the for loop makes the program to slow to do NEAT
         for i in range(len(current_angles)):
             if i % 3 == 0:
-                current_angles[i] = (current_angles[i] * 2) - (2 / 2)
+                current_angles[i] = (current_angles[i] * math.pi) - (math.pi / 2)
             elif i % 3 == 1:
                 current_angles[i] = current_angles[i] * 0.63
             else:
