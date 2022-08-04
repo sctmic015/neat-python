@@ -90,7 +90,7 @@ def run(gens):
 
 
 if __name__ == '__main__':
-    WINNER = run(10)[0]  # Only relevant to look at the winner.
+    WINNER = run(100)[0]  # Only relevant to look at the winner.
     print("This is the winner!!!")
     print(type(WINNER))
     print('\nBest genome:\n{!s}'.format(WINNER))
@@ -101,9 +101,6 @@ if __name__ == '__main__':
     #    CPPN = pickle.load(f)
     ## ANN for winner
     WINNER_NET = create_phenotype_network(CPPN, SUBSTRATE)
-    print("Hi \n")
-    print(type(WINNER_NET))
-    print('\nBest genome:\n{!s}'.format(WINNER_NET))
 
     # Create and run controller
     controller = Controller(tripod_gait, body_height=0.15, velocity=0.46, crab_angle=-1.57, ann=WINNER_NET, activations=ACTIVATIONS)
