@@ -5,7 +5,6 @@ import neat.nn
 import numpy as np
 import multiprocessing
 import os
-os.curdir
 
 from hexapod.controllers.testingNeat import Controller, tripod_gait, reshape
 from hexapod.simulator import Simulator
