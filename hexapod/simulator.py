@@ -32,7 +32,9 @@ class Simulator:
     """
 	def __init__(self, controller, urdf='/urdf/hexapod_simplified.urdf', visualiser=False, follow=True, collision_fatal=True, failed_legs=[], camera_position=[0, 0, 0], camera_distance=0.7, camera_yaw=20, camera_pitch=-30):
 		self.t = 0 #: float: Current time of the simulator
-		self.dt = 1.0/40  #: float: Timestep of simulator. Default is 1/240s for PyBullet.
+		self.dt = 1.0/ 240  #: float: Timestep of simulator. Default is 1/240s for PyBullet.
+		self.previous_joint_angles = []
+		self.count = 0
 		self.n_step = 0
 		self.gravity = -9.81 #: float: Magnitude of gravity vector in the positive z direction
 		self.foot_friction = 0.7
@@ -182,9 +184,17 @@ class Simulator:
         This will request the joint angles and speeds from the assigned controller
 
         """
+		returnDifference = 0
 		start_time = time.perf_counter()
+		if self.count == 0:
+			self.count += 1
 		# using setJointMotorControl2 (slightly slower but allows setting of max velocity)
 		joint_angles = self.controller.joint_angles(t=self.t)
+		if self.count == 0:
+			self.count += 1
+		else:
+			difference = [abs(x-y) for x, y in zip(joint_angles, self.previous_joint_angles)]
+			returnDifference = sum(difference)
 
 		for index, joint_properties in enumerate(self.joints):
 			joint_index, lower_limit, upper_limit, max_torque, max_speed = joint_properties
@@ -218,6 +228,8 @@ class Simulator:
 		self.client.stepSimulation()
 		self.n_step += 1
 		self.t += self.dt
+		self.previous_joint_angles = joint_angles
+		return returnDifference
 	
 	def supporting_legs(self):
 		"""Determines the supporting legs for the hexapod

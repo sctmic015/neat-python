@@ -1,3 +1,4 @@
+import math
 import pickle
 import neat
 import neat.nn
@@ -14,7 +15,6 @@ def evaluate_gait_parallel(genome, config, duration = 5):
     cppn = neat.nn.FeedForwardNetwork.create(genome, config)
     # Create ANN from CPPN and Substrate
     net = create_phenotype_network(cppn, SUBSTRATE)
-    #net.reset()
     # Reset net
 
     leg_params = np.array(tripod_gait).reshape(6, 5)
@@ -27,14 +27,17 @@ def evaluate_gait_parallel(genome, config, duration = 5):
     # Initialise Simulator
     simulator = Simulator(controller=controller, visualiser=False, collision_fatal=True)
     # Step in simulator
+    difference = 0
     for t in np.arange(0, duration, step=simulator.dt):
         try:
-            simulator.step()
+            difference += simulator.step()
         except RuntimeError as collision:
             fitness = 0, np.zeros(6)
     fitness = simulator.base_pos()[0]  # distance travelled along x axis
     # Terminate Simulator
     simulator.terminate()
+    # print(difference)
+    #fitness = difference
     # Assign fitness to genome
     return fitness
 
@@ -46,7 +49,7 @@ INPUT_COORDINATES = [(0.2, 0.5), (0.4, 0.5), (0.6, 0.5),
                      (-0.6, -0.5), (-0.4, -0.5), (-0.2, -0.5),
                      (-0.6, 0), (-0.4, 0), (-0.2, 0),
                      (-0.6, 0.5), (-0.4, 0.5), (-0.2, 0.5),
-                     (0, 0.25), (0, -0.25)]
+                     (0, 0)]
 OUTPUT_COORDINATES = [(0.2, 0.5), (0.4, 0.5), (0.6, 0.5),
                      (0.2, 0), (0.4, 0), (0.6, 0),
                      (0.2, -0.5), (0.4, -0.5), (0.6, -0.5),
@@ -87,7 +90,7 @@ def run(gens):
 
 
 if __name__ == '__main__':
-    WINNER = run(100)[0]  # Only relevant to look at the winner.
+    WINNER = run(10)[0]  # Only relevant to look at the winner.
     print("This is the winner!!!")
     print(type(WINNER))
     print('\nBest genome:\n{!s}'.format(WINNER))
@@ -98,6 +101,9 @@ if __name__ == '__main__':
     #    CPPN = pickle.load(f)
     ## ANN for winner
     WINNER_NET = create_phenotype_network(CPPN, SUBSTRATE)
+    print("Hi \n")
+    print(type(WINNER_NET))
+    print('\nBest genome:\n{!s}'.format(WINNER_NET))
 
     # Create and run controller
     controller = Controller(tripod_gait, body_height=0.15, velocity=0.46, crab_angle=-1.57, ann=WINNER_NET, activations=ACTIVATIONS)

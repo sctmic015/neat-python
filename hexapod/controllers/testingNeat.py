@@ -4,6 +4,8 @@ import neat
 import numpy as np
 
 # radius, offset, step_height, phase, duty_factor
+from hexapod.controllers.anglequee import anglequee
+
 tripod_gait = [0.15, 0, 0.05, 0.5, 0.5,  # leg 1
                0.15, 0, 0.05, 0.0, 0.5,  # leg 2
                0.15, 0, 0.05, 0.5, 0.5,  # leg 3
@@ -76,19 +78,26 @@ class Controller:
 
         initial_angle = self.angles[:, 0]
         self.current_angle = initial_angle
+        self.aq = anglequee()
+        self.aq.add(self.current_angle)
+
 
     def joint_angles(self, t):
 
-        sinewave = math.sin(t*2*math.pi)
-        coswave = math.cos(t*2*math.pi)
+        self.ann.reset()
+        #sinewave = math.sin(self.count * 2 * math.pi/3) * math.pi
+        self.count += 1
+        sinewave = math.sin(t * 2 * math.pi / 3 * 16) * math.pi
+        coswave = math.cos(self.count * 2 * math.pi/3) * math.pi
         input_angles = np.append(self.current_angle, sinewave)
-        input_angles = np.append(input_angles, coswave)
-        #for i in range(self.activations):
-        current_angles = self.ann.activate(input_angles)
+        #input_angles = np.append(input_angles, coswave)
+        # for i in range(self.activations):
+        for i in range(self.activations):
+            current_angles = self.ann.activate(input_angles)
         # Current theory is that the for loop makes the program to slow to do NEAT
         for i in range(len(current_angles)):
             if i % 3 == 0:
-                current_angles[i] = (current_angles[i] * 2) - (2 / 2)
+                current_angles[i] = (current_angles[i] * 2.0944) - (2.5 / 2)
             elif i % 3 == 1:
                 current_angles[i] = current_angles[i] * 0.63
             else:
@@ -97,6 +106,29 @@ class Controller:
         self.current_angle = current_angles
 
         return current_angles
+
+        # sinewave = math.sin(t*2*math.pi)
+        # coswave = math.cos(t*2*math.pi)
+        # input_angles = self.aq.get_moving_average()
+        # input_angles = np.append(self.current_angle, sinewave)
+        # input_angles = np.append(input_angles, coswave)
+        # #for i in range(self.activations):
+        # current_angles = self.ann.activate(input_angles)
+        #
+        # # Current theory is that the for loop makes the program to slow to do NEAT
+        # for i in range(len(current_angles)):
+        #     if i % 3 == 0:
+        #         current_angles[i] = (current_angles[i] * 2) - (2 / 2)
+        #     elif i % 3 == 1:
+        #         current_angles[i] = current_angles[i] * 0.63
+        #     else:
+        #         current_angles[i] = current_angles[i] * 0.7 - 2.095
+        #
+        # self.aq.add(current_angles)
+        # current_angles = self.aq.get_moving_average()
+        # self.current_angle = current_angles
+        #
+        # return current_angles
 
     def joint_speeds(self, t):
         k = int(((t % self.period) / self.period) * self.array_dim)

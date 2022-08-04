@@ -10,8 +10,6 @@ def evaluate_gait(genomes, config, duration=5):
     for genome_id, genome in genomes:
         genome.fitness = 4.0
         net = neat.nn.RecurrentNetwork.create(genome, config)
-        net = neat.ctrnn.CTRNN.create(genome, config, )
-        net.reset()
         leg_params = np.array(tripod_gait).reshape(6, 5)
         #print(net.values)
         try:
@@ -41,11 +39,12 @@ def evaluate_gait_parallel(genome, config, duration=5):
         controller = Controller(leg_params, body_height=0.15, velocity=0.5, period=1.0, crab_angle=-np.pi / 6, ann=net)
     except:
         return 0, np.zeros(6)
-    simulator = Simulator(controller=controller, visualiser=False, collision_fatal=True)
+    simulator = Simulator(controller=controller, visualiser=False, collision_fatal=False)
     # contact_sequence = np.full((6, 0), False)
+    difference = 0
     for t in np.arange(0, duration, step=simulator.dt):
         try:
-            simulator.step()
+            difference += simulator.step()
         except RuntimeError as collision:
             fitness = 0, np.zeros(6)
     # contact_sequence = np.append(contact_sequence, simulator.supporting_legs().reshape(-1, 1), axis=1)
@@ -53,7 +52,8 @@ def evaluate_gait_parallel(genome, config, duration=5):
     # summarise descriptor
     # descriptor = np.nan_to_num(np.sum(contact_sequence, axis=1) / np.size(contact_sequence, axis=1), nan=0.0, posinf=0.0, neginf=0.0)
     simulator.terminate()
-    return fitness
+    print(difference)
+    return difference
 
 config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
                      neat.DefaultSpeciesSet, neat.DefaultStagnation,
@@ -69,7 +69,7 @@ def runNeat(gens):
     return winner
 
 if __name__ == '__main__':
-    winner = runNeat(100)
+    winner = runNeat(2)
     winner_net = neat.nn.RecurrentNetwork.create(winner, config)
 
     print('\nBest genome:\n{!s}'.format(winner))
