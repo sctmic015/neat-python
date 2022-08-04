@@ -87,8 +87,8 @@ class Controller:
         self.ann.reset()
         #sinewave = math.sin(self.count * 2 * math.pi/3) * math.pi
         self.count += 1
-        sinewave = math.sin(t * 2 * math.pi / 3 * 16) * math.pi
-        coswave = math.cos(self.count * 2 * math.pi/3) * math.pi
+        sinewave = math.sin(t * 2 * math.pi / 3 * 16) * 2*math.pi
+        coswave = math.cos(t * 2 * math.pi / 3 * 16) * 2*math.pi
         input_angles = np.append(self.current_angle, sinewave)
         #input_angles = np.append(input_angles, coswave)
         # for i in range(self.activations):
