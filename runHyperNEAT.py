@@ -99,6 +99,7 @@ def run(gens):
 
 
 if __name__ == '__main__':
+    os.mkdir("output")
     numRuns = int(sys.argv[1])
     fileNumber = (sys.argv[2])
     WINNER, STATS = run(numRuns)  # Only relevant to look at the winner.
