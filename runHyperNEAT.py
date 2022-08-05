@@ -91,7 +91,7 @@ def run(gens):
 
 
 if __name__ == '__main__':
-    WINNER = run(100)[0]  # Only relevant to look at the winner.
+    WINNER = run(500)[0]  # Only relevant to look at the winner.
     print("This is the winner!!!")
     print(type(WINNER))
     print('\nBest genome:\n{!s}'.format(WINNER))
