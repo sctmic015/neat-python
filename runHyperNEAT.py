@@ -6,6 +6,7 @@ import neat.nn
 import numpy as np
 import multiprocessing
 import os
+import sys
 import visualize as vz
 
 from hexapod.controllers.testingNeat import Controller, tripod_gait, reshape
@@ -23,7 +24,7 @@ def evaluate_gait_parallel(genome, config, duration = 5):
     leg_params = np.array(tripod_gait).reshape(6, 5)
     # Set up controller
     try:
-        controller = Controller(leg_params, body_height=0.15, velocity=0.9, period=1.0, crab_angle=-np.pi / 6,
+        controller = Controller(leg_params, body_height=0.15, velocity=0.5, period=1.0, crab_angle=-np.pi / 6,
                                 ann=net, activations=ACTIVATIONS)
     except:
         return 0, np.zeros(6)
@@ -74,7 +75,7 @@ ACTIVATIONS = len(HIDDEN_COORDINATES) + 2
 # Configure cppn using config file
 CONFIG = neat.config.Config(neat.genome.DefaultGenome, neat.reproduction.DefaultReproduction,
                             neat.species.DefaultSpeciesSet, neat.stagnation.DefaultStagnation,
-                            'config-cppn')
+                            'NEATHex/config-cppn')
 
 def run(gens):
     """
@@ -88,6 +89,7 @@ def run(gens):
 
     pe = neat.parallel.ParallelEvaluator(multiprocessing.cpu_count(), evaluate_gait_parallel)
     winner = pop.run(pe.evaluate, gens)
+
     print("done")
 
     vz.plot_stats(stats, ylog=False, view=True)
@@ -97,10 +99,13 @@ def run(gens):
 
 
 if __name__ == '__main__':
-    WINNER = run(200)[0]  # Only relevant to look at the winner.
+    numRuns = int(sys.argv[1])
+    fileNumber = (sys.argv[2])
+    WINNER, STATS = run(numRuns)  # Only relevant to look at the winner.
     print("This is the winner!!!")
     print(type(WINNER))
     print('\nBest genome:\n{!s}'.format(WINNER))
+    STATS.save_genome_fitness(delimiter=',', filename='output/fitness_history' + fileNumber + '.csv')
 
     # CPPN for winner
     CPPN = neat.nn.FeedForwardNetwork.create(WINNER, CONFIG)
@@ -108,11 +113,12 @@ if __name__ == '__main__':
     #    CPPN = pickle.load(f)
     ## ANN for winner
     WINNER_NET = create_phenotype_network(CPPN, SUBSTRATE)
+    outputName = "hyperneat" + fileNumber + ".pkl"
 
-    with open('hyperneat_xor_cppn.pkl', 'wb') as output:
+    with open('output/' + outputName, 'wb') as output:
         pickle.dump(CPPN, output, pickle.HIGHEST_PROTOCOL)
-    draw_net(CPPN, filename="hyperneat_xor_cppn")
-    draw_net(WINNER_NET, filename="hyperneat_xor_winner")
+    draw_net(CPPN, filename="output/hyperneatCPPN" + fileNumber)
+    draw_net(WINNER_NET, filename="output/hyperneatWINNER" + fileNumber)
 
 
     # Create and run controller

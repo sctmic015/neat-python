@@ -13,7 +13,7 @@ def evaluate_gait(genomes, config, duration=5):
         leg_params = np.array(tripod_gait).reshape(6, 5)
         #print(net.values)
         try:
-            controller = Controller(leg_params, body_height=0.15, velocity=0.46, period=1.0,crab_angle=-np.pi / 6, ann=net)
+            controller = Controller(leg_params, body_height=0.15, velocity=0.5, period=1.0,crab_angle=-np.pi / 6, ann=net)
         except:
             return 0, np.zeros(6)
         simulator = Simulator(controller=controller, visualiser=False, collision_fatal=True)
@@ -74,7 +74,7 @@ if __name__ == '__main__':
 
     print('\nBest genome:\n{!s}'.format(winner))
 
-    controller = Controller(tripod_gait, body_height=0.15, velocity=0.46, crab_angle=-1.57, ann = winner_net, printangles= True)
+    controller = Controller(tripod_gait, body_height=0.15, velocity=0.5, crab_angle=-1.57, ann = winner_net, printangles= True)
     simulator = Simulator(controller, follow=True, visualiser=True, collision_fatal=False, failed_legs=[0])
 
     while True:
