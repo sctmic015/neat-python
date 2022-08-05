@@ -103,14 +103,16 @@ if __name__ == '__main__':
     ## ANN for winner
     WINNER_NET = create_phenotype_network(CPPN, SUBSTRATE)
 
-    # Create and run controller
-    controller = Controller(tripod_gait, body_height=0.15, velocity=0.46, crab_angle=-1.57, ann=WINNER_NET, activations=ACTIVATIONS)
-    simulator = Simulator(controller, follow=True, visualiser=True, collision_fatal=False, failed_legs=[0])
-
     with open('hyperneat_xor_cppn.pkl', 'wb') as output:
         pickle.dump(CPPN, output, pickle.HIGHEST_PROTOCOL)
     draw_net(CPPN, filename="hyperneat_xor_cppn")
     draw_net(WINNER_NET, filename="hyperneat_xor_winner")
+
+    # Create and run controller
+    controller = Controller(tripod_gait, body_height=0.15, velocity=0.46, crab_angle=-1.57, ann=WINNER_NET, activations=ACTIVATIONS)
+    simulator = Simulator(controller, follow=True, visualiser=True, collision_fatal=False, failed_legs=[0])
+
+
 
     while True:
         simulator.step()
