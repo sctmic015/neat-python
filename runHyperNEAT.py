@@ -90,11 +90,8 @@ def run(gens):
     winner = pop.run(pe.evaluate, gens)
     print("done")
 
-    node_names = {-1: 'A', -2: 'B', 0: 'A XOR B'}
-    visualize.draw_net(CONFIG, winner, True, node_names=node_names)
-    visualize.draw_net(CONFIG, winner, True, node_names=node_names, prune_unused=True)
-    visualize.plot_stats(stats, ylog=False, view=True)
-    visualize.plot_species(stats, view=True)
+    vz.plot_stats(stats, ylog=False, view=True)
+    vz.plot_species(stats, view=True)
 
     return winner, stats
 
