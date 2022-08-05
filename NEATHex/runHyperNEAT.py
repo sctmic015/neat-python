@@ -4,12 +4,12 @@ import neat
 import neat.nn
 import numpy as np
 import multiprocessing
-import os
+import visualize as vz
 
 from hexapod.controllers.testingNeat import Controller, tripod_gait, reshape
 from hexapod.simulator import Simulator
 from pureples.hyperneat import create_phenotype_network
-from pureples.shared import Substrate, run_hyper
+from pureples.shared import Substrate, run_hyper, visualize
 from pureples.shared.visualize import draw_net
 
 def evaluate_gait_parallel(genome, config, duration = 5):
@@ -87,11 +87,17 @@ def run(gens):
     pe = neat.parallel.ParallelEvaluator(multiprocessing.cpu_count(), evaluate_gait_parallel)
     winner = pop.run(pe.evaluate, gens)
     print("done")
+
+    vz.plot_stats(stats, ylog=False, view=True)
+    vz.plot_species(stats, view=True)
+
     return winner, stats
 
 
 if __name__ == '__main__':
-    WINNER = run(100)[0]  # Only relevant to look at the winner.
+    WINNER, STATS = run(4)  # Only relevant to look at the winner.
+    print("Ahoy there")
+    print(STATS)
     print("This is the winner!!!")
     print(type(WINNER))
     print('\nBest genome:\n{!s}'.format(WINNER))

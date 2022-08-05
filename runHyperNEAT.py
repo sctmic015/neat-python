@@ -1,10 +1,12 @@
 import math
 import pickle
 import neat
+import visualize
 import neat.nn
 import numpy as np
 import multiprocessing
 import os
+import visualize as vz
 
 from hexapod.controllers.testingNeat import Controller, tripod_gait, reshape
 from hexapod.simulator import Simulator
@@ -87,11 +89,18 @@ def run(gens):
     pe = neat.parallel.ParallelEvaluator(multiprocessing.cpu_count(), evaluate_gait_parallel)
     winner = pop.run(pe.evaluate, gens)
     print("done")
+
+    node_names = {-1: 'A', -2: 'B', 0: 'A XOR B'}
+    visualize.draw_net(CONFIG, winner, True, node_names=node_names)
+    visualize.draw_net(CONFIG, winner, True, node_names=node_names, prune_unused=True)
+    visualize.plot_stats(stats, ylog=False, view=True)
+    visualize.plot_species(stats, view=True)
+
     return winner, stats
 
 
 if __name__ == '__main__':
-    WINNER = run(500)[0]  # Only relevant to look at the winner.
+    WINNER = run(200)[0]  # Only relevant to look at the winner.
     print("This is the winner!!!")
     print(type(WINNER))
     print('\nBest genome:\n{!s}'.format(WINNER))
@@ -107,6 +116,7 @@ if __name__ == '__main__':
         pickle.dump(CPPN, output, pickle.HIGHEST_PROTOCOL)
     draw_net(CPPN, filename="hyperneat_xor_cppn")
     draw_net(WINNER_NET, filename="hyperneat_xor_winner")
+
 
     # Create and run controller
     controller = Controller(tripod_gait, body_height=0.15, velocity=0.46, crab_angle=-1.57, ann=WINNER_NET, activations=ACTIVATIONS)
