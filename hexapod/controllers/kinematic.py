@@ -74,9 +74,11 @@ class Controller:
 		smallest = 100
 		largest = -100
 		for i in range(len(out)):
-			if (i != 11):
+			if (i != 10):
 				out[i] = 0
-		print(out[11])
+			else:
+				out[i] = 0.63
+
 		return out
 
 
