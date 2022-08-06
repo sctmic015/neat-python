@@ -8,6 +8,7 @@ import multiprocessing
 import os
 import sys
 import visualize as vz
+import shutil
 
 from hexapod.controllers.hyperNEATController import Controller, tripod_gait, reshape
 from hexapod.simulator import Simulator
@@ -31,17 +32,14 @@ def evaluate_gait_parallel(genome, config, duration = 5):
     # Initialise Simulator
     simulator = Simulator(controller=controller, visualiser=False, collision_fatal=True)
     # Step in simulator
-    difference = 0
     for t in np.arange(0, duration, step=simulator.dt):
         try:
-            difference += simulator.step()
+            simulator.step()
         except RuntimeError as collision:
             fitness = 0, np.zeros(6)
     fitness = simulator.base_pos()[0]  # distance travelled along x axis
     # Terminate Simulator
     simulator.terminate()
-    # print(difference)
-    #fitness = difference
     # Assign fitness to genome
     return fitness
 
@@ -98,35 +96,31 @@ def run(gens):
 
 
 if __name__ == '__main__':
+    if os.path.exists("HyperNEATOutput") and os.path.isdir("HyperNEATOutput"):
+        shutil.rmtree("HyperNEATOutput")
     numRuns = int(sys.argv[1])
-    fileNumber = (sys.argv[2])
-    WINNER, STATS = run(numRuns)  # Only relevant to look at the winner.
-    print("This is the winner!!!")
-    print(type(WINNER))
-    print('\nBest genome:\n{!s}'.format(WINNER))
-    STATS.save_genome_fitness(delimiter=',', filename='output/fitness_history' + fileNumber + '.csv')
-    vz.plot_stats(STATS, ylog=False, view=True, filename='output/avg_fitness' + fileNumber + '.svg')
-    vz.plot_species(STATS, view=True, filename='output/speciation' + fileNumber + '.svg')
+    startIndex = int(sys.argv[2])
+    endIndex = int(sys.argv[3])
 
-    # CPPN for winner
-    CPPN = neat.nn.FeedForwardNetwork.create(WINNER, CONFIG)
-    #with open("1000evals.pkl", 'rb') as f:
-    #    CPPN = pickle.load(f)
-    ## ANN for winner
-    WINNER_NET = create_phenotype_network(CPPN, SUBSTRATE)
-    outputName = "hyperneat" + fileNumber + ".pkl"
+    for i in range(startIndex, endIndex):
+        WINNER, STATS = run(numRuns)  # Only relevant to look at the winner.
+        print("This is the winner!!!")
+        print(type(WINNER))
+        print('\nBest genome:\n{!s}'.format(WINNER))
+        STATS.save_genome_fitness(delimiter=',', filename='HyperNEATOutput/fitness_history' + i + '.csv')
+        vz.plot_stats(STATS, ylog=False, view=True, filename='HyperNEATOutput/avg_fitness' + i + '.svg')
+        vz.plot_species(STATS, view=True, filename='HyperNEATOutput/speciation' + i + '.svg')
 
-    with open('output/' + outputName, 'wb') as output:
-        pickle.dump(CPPN, output, pickle.HIGHEST_PROTOCOL)
-    draw_net(CPPN, filename="output/hyperneatCPPN" + fileNumber)
-    draw_net(WINNER_NET, filename="output/hyperneatWINNER" + fileNumber)
+        # CPPN for winner
+        CPPN = neat.nn.FeedForwardNetwork.create(WINNER, CONFIG)
+        #with open("1000evals.pkl", 'rb') as f:
+        #    CPPN = pickle.load(f)
+        ## ANN for winner
+        WINNER_NET = create_phenotype_network(CPPN, SUBSTRATE)
+        outputName = "hyperneat" + i + ".pkl"
 
+        with open('HyperNEATOutput/' + outputName, 'wb') as output:
+            pickle.dump(CPPN, output, pickle.HIGHEST_PROTOCOL)
+        draw_net(CPPN, filename="HyperNEATOutput/hyperneatCPPN" + i)
+        draw_net(WINNER_NET, filename="HyperNEATOutput/hyperneatWINNER" + i)
 
-    # Create and run controller
-    controller = Controller(tripod_gait, body_height=0.15, velocity=0.5, crab_angle=-1.57, ann=WINNER_NET, activations=ACTIVATIONS)
-    simulator = Simulator(controller, follow=True, visualiser=True, collision_fatal=False, failed_legs=[0])
-
-
-
-    while True:
-        simulator.step()
