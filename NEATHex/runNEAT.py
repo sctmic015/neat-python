@@ -1,5 +1,5 @@
 import neat
-from hexapod.controllers.testingNeat import Controller, tripod_gait, reshape
+from hexapod.controllers.NEATController import Controller, tripod_gait, reshape
 from hexapod.simulator import Simulator
 import numpy as np
 import multiprocessing
@@ -31,8 +31,8 @@ def evaluate_gait(genomes, config, duration=5):
         genome.fitness = fitness
 
 def evaluate_gait_parallel(genome, config, duration=5):
-    net = neat.nn.RecurrentNetwork.create(genome, config)
-    net.reset()
+    net = neat.nn.FeedForwardNetwork.create(genome, config)
+    #net.reset()
     leg_params = np.array(tripod_gait).reshape(6, 5)
     # print(net.values)
     try:
@@ -52,8 +52,7 @@ def evaluate_gait_parallel(genome, config, duration=5):
     # summarise descriptor
     # descriptor = np.nan_to_num(np.sum(contact_sequence, axis=1) / np.size(contact_sequence, axis=1), nan=0.0, posinf=0.0, neginf=0.0)
     simulator.terminate()
-    print(difference)
-    return difference
+    return fitness
 
 config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
                      neat.DefaultSpeciesSet, neat.DefaultStagnation,

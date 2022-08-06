@@ -90,7 +90,7 @@ class Controller:
         sinewave = math.sin(t * 2 * math.pi / 3 * 16) * 2*math.pi
         coswave = math.cos(t * 2 * math.pi / 3 * 16) * 2*math.pi
         input_angles = np.append(self.current_angle, sinewave)
-        #input_angles = np.append(input_angles, coswave)
+        input_angles = np.append(input_angles, coswave)
         # for i in range(self.activations):
         for i in range(self.activations):
             current_angles = self.ann.activate(input_angles)

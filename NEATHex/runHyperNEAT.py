@@ -6,7 +6,7 @@ import numpy as np
 import multiprocessing
 import visualize as vz
 
-from hexapod.controllers.testingNeat import Controller, tripod_gait, reshape
+from hexapod.controllers.hyperNEATController import Controller, tripod_gait, reshape
 from hexapod.simulator import Simulator
 from pureples.hyperneat import create_phenotype_network
 from pureples.shared import Substrate, run_hyper, visualize
