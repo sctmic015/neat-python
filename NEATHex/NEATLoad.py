@@ -15,7 +15,7 @@ config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
                      'config-feedforward')
 
 
-with open("neat0.pkl", 'rb') as f:
+with open("neat1.pkl", 'rb') as f:
     winner = pickle.load(f)
     winner_net = neat.nn.FeedForwardNetwork.create(winner, config)
 
