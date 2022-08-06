@@ -8,6 +8,7 @@ import multiprocessing
 import os
 import sys
 import visualize as vz
+import shutil
 
 from hexapod.controllers.hyperNEATController import Controller, tripod_gait, reshape
 from hexapod.simulator import Simulator
@@ -99,6 +100,8 @@ def run(gens):
 
 
 if __name__ == '__main__':
+    if os.path.exists("HyperNEATOutput") and os.path.isdir("HyperNEATOutput"):
+        shutil.rmtree("HyperNEATOutput")
     os.mkdir("HyperNEATOutput")
     numRuns = int(sys.argv[1])
     fileNumber = (sys.argv[2])
@@ -106,7 +109,7 @@ if __name__ == '__main__':
     print("This is the winner!!!")
     print(type(WINNER))
     print('\nBest genome:\n{!s}'.format(WINNER))
-    STATS.save_genome_fitness(delimiter=',', filename='output/fitness_history' + fileNumber + '.csv')
+    STATS.save_genome_fitness(delimiter=',', filename='HyperNEATOutput/fitness_history' + fileNumber + '.csv')
 
     # CPPN for winner
     CPPN = neat.nn.FeedForwardNetwork.create(WINNER, CONFIG)
@@ -116,10 +119,10 @@ if __name__ == '__main__':
     WINNER_NET = create_phenotype_network(CPPN, SUBSTRATE)
     outputName = "hyperneat" + fileNumber + ".pkl"
 
-    with open('output/' + outputName, 'wb') as output:
+    with open('HyperNEATOutput/' + outputName, 'wb') as output:
         pickle.dump(CPPN, output, pickle.HIGHEST_PROTOCOL)
-    draw_net(CPPN, filename="output/hyperneatCPPN" + fileNumber)
-    draw_net(WINNER_NET, filename="output/hyperneatWINNER" + fileNumber)
+    draw_net(CPPN, filename="HyperNEATOutput/hyperneatCPPN" + fileNumber)
+    draw_net(WINNER_NET, filename="HyperNEATOutput/hyperneatWINNER" + fileNumber)
 
 
     # Create and run controller
