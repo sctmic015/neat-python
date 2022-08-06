@@ -31,10 +31,10 @@ def evaluate_gait_parallel(genome, config, duration = 5):
     # Initialise Simulator
     simulator = Simulator(controller=controller, visualiser=False, collision_fatal=True)
     # Step in simulator
-    difference = 0
+
     for t in np.arange(0, duration, step=simulator.dt):
         try:
-            difference += simulator.step()
+            simulator.step()
         except RuntimeError as collision:
             fitness = 0, np.zeros(6)
     fitness = simulator.base_pos()[0]  # distance travelled along x axis
@@ -99,7 +99,7 @@ def run(gens):
 
 
 if __name__ == '__main__':
-    os.mkdir("output")
+    os.mkdir("HyperNEATOutput")
     numRuns = int(sys.argv[1])
     fileNumber = (sys.argv[2])
     WINNER, STATS = run(numRuns)  # Only relevant to look at the winner.
