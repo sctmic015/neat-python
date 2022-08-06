@@ -93,8 +93,7 @@ def run(gens):
 
     print("done")
 
-    vz.plot_stats(stats, ylog=False, view=True)
-    vz.plot_species(stats, view=True)
+
 
     return winner, stats
 
@@ -110,6 +109,8 @@ if __name__ == '__main__':
     print(type(WINNER))
     print('\nBest genome:\n{!s}'.format(WINNER))
     STATS.save_genome_fitness(delimiter=',', filename='HyperNEATOutput/fitness_history' + fileNumber + '.csv')
+    vz.plot_stats(STATS, ylog=False, view=True, filename='HyperNEATOutput/average_fitness' + fileNumber + '.svg')
+    vz.plot_species(STATS, view=True, filename='HyperNEATOutput/speciation' + fileNumber + '.svg')
 
     # CPPN for winner
     CPPN = neat.nn.FeedForwardNetwork.create(WINNER, CONFIG)
