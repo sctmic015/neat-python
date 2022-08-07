@@ -90,7 +90,10 @@ if __name__ == '__main__':
     vz.plot_stats(stats, ylog=False, view=True, filename='NEATOutput/average_fitness' + fileNumber + '.svg')
     vz.plot_species(stats, view=True, filename='NEATOutput/speciation' + fileNumber + '.svg')
 
+    #winner.mutate(config.genome_config) think this is the way to do a mutation
+
     winner_net = neat.nn.FeedForwardNetwork.create(winner, config)
+
 
     outputName = "neat" + fileNumber + ".pkl"
 
