@@ -48,6 +48,10 @@ from collections import defaultdict
 from sklearn.cluster import KMeans
 import neat
 
+config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
+                     neat.DefaultSpeciesSet, neat.DefaultStagnation,
+                     'NEATHex/config-feedforward')
+
 default_params = \
     {
         # more of this -> higher-quality CVT
@@ -202,7 +206,7 @@ def cvt(k, dim, samples, cvt_use_cache=True):
 
     x = np.random.rand(samples, dim)
     k_means = KMeans(init='k-means++', n_clusters=k,
-                     n_init=1, n_jobs=-1, verbose=1)#,algorithm="full")
+                     n_init=1, verbose=1)#,algorithm="full")
     k_means.fit(x)
     __write_centroids(k_means.cluster_centers_)
 

@@ -17,6 +17,8 @@ config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
 
 with open("neat4.pkl", 'rb') as f:
     winner = pickle.load(f)
+    winner.mutate(config.genome_config)
+    print(winner.compute_full_connections(config.genome_config, direct=True))
     winner_net = neat.nn.FeedForwardNetwork.create(winner, config)
 
 controller = Controller(tripod_gait, body_height=0.15, velocity=0.5, crab_angle=-1.57, ann=winner_net,

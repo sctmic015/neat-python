@@ -120,6 +120,7 @@ class DefaultClassConfig(object):
 
 class Config(object):
     """A container for user-configurable parameters of NEAT."""
+    genome_config: object
 
     __params = [ConfigParameter('pop_size', int),
                 ConfigParameter('fitness_criterion', str),

@@ -44,7 +44,7 @@ import multiprocessing
 # from scipy.spatial import cKDTree : TODO -- faster?
 from sklearn.neighbors import KDTree
 
-from map_elites import common as cm
+from pymap_elites.map_elites_1 import common as cm
 
 
 
