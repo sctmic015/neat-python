@@ -77,8 +77,16 @@ def runNeat(gens):
     return winner, stats
 
 if __name__ == '__main__':
-    if os.path.exists("NEATOutput") and os.path.isdir("NEATOutput"):
-        shutil.rmtree("NEATOutput")
+    if not os.path.exists("NEATOutput"):
+        os.mkdir("NEATOutput")
+        if not os.path.exists("NEATOutput/genomeFitness"):
+            os.mkdir("NEATOutput/genomeFitness")
+        if not os.path.exists("NEATOutput/graphs"):
+            os.mkdir("NEATOutput/graphs")
+        if not os.path.exists("NEATOutput/bestGenomes"):
+            os.mkdir("NEATOutput/bestGenomes")
+        if not os.path.exists("NEATOutput/stats"):
+            os.mkdir("NeatOutput/stats")
     numRuns = int(sys.argv[1])
     startIndex = int(sys.argv[2])
     endIndex = int(sys.argv[3])
@@ -87,16 +95,20 @@ if __name__ == '__main__':
 
         print("This is the winner!!!")
         print('\nBest genome:\n{!s}'.format(winner))
-        stats.save_genome_fitness(delimiter=',', filename='NEATOutput/fitness_history' + i + '.csv')
-        vz.plot_stats(stats, ylog=False, view=True, filename='NEATOutput/avg_fitness' + i + '.svg')
-        vz.plot_species(stats, view=True, filename='NEATOutput/speciation' + i + '.svg')
+        stats.save_genome_fitness(delimiter=',', filename='NEATOutput/genomeFitness/NEATFitnessHistory' + i + '.csv')
+        vz.plot_stats(stats, ylog=False, view=True, filename='NEATOutput/graphs/NEATAverageFitness' + i + '.svg')
+        vz.plot_species(stats, view=True, filename='NEATOutput/graphs/NEATSpeciation' + i + '.svg')
 
         winner_net = neat.nn.FeedForwardNetwork.create(winner, config)
 
-        outputName = "neat" + i + ".pkl"
-        with open('NEATOutput/' + outputName, 'wb') as output:
+        outputNameGenome = "NEATGenome" + i + ".pkl"
+        outputNamePopulation = "NEATStats" + i + ".pkl"
+
+        with open('NEATOutput/bestGenomes/' + outputNameGenome, 'wb') as output:
             pickle.dump(winner, output, pickle.HIGHEST_PROTOCOL)
-        draw_net(winner_net, filename="NEATOutput/neatWINNER" + i)
+        with open('NEATOutput/stats/' + outputNamePopulation, 'wb') as output:
+            pickle.dump(stats, output, pickle.HIGHEST_PROTOCOL)
+        draw_net(winner_net, filename="NEATOutput/graphs/NEATWINNER" + i)
 
 
 

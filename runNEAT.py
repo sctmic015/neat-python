@@ -75,32 +75,42 @@ def runNeat(gens):
 
     pe = neat.parallel.ParallelEvaluator(multiprocessing.cpu_count(), evaluate_gait_parallel)
     winner = p.run(pe.evaluate, gens)
+
     return winner, stats
 
 
 if __name__ == '__main__':
-    if os.path.exists("NEATOutput") and os.path.isdir("NEATOutput"):
-        shutil.rmtree("NEATOutput")
-    os.mkdir("NEATOutput")
+    if not os.path.exists("NEATOutput"):
+        os.mkdir("NEATOutput")
+        if not os.path.exists("NEATOutput/genomeFitness"):
+            os.mkdir("NEATOutput/genomeFitness")
+        if not os.path.exists("NEATOutput/graphs"):
+            os.mkdir("NEATOutput/graphs")
+        if not os.path.exists("NEATOutput/bestGenomes"):
+            os.mkdir("NEATOutput/bestGenomes")
+        if not os.path.exists("NEATOutput/stats"):
+            os.mkdir("NeatOutput/stats")
     numRuns = int(sys.argv[1])
     fileNumber = (sys.argv[2])
     winner, stats = runNeat(numRuns)
+    # stats.best_genomes(n) or best_unique_genomes(n). to get the best genomes
     print('\nBest genome:\n{!s}'.format(winner))
-    stats.save_genome_fitness(delimiter=',', filename='NEATOutput/fitness_history' + fileNumber + '.csv')
-    vz.plot_stats(stats, ylog=False, view=True, filename='NEATOutput/average_fitness' + fileNumber + '.svg')
-    vz.plot_species(stats, view=True, filename='NEATOutput/speciation' + fileNumber + '.svg')
+    stats.save_genome_fitness(delimiter=',', filename='NEATOutput/genomeFitness/NEATFitnessHistory' + fileNumber + '.csv')
+    vz.plot_stats(stats, ylog=False, view=True, filename='NEATOutput/graphs/NEATAverageFitness' + fileNumber + '.svg')
+    vz.plot_species(stats, view=True, filename='NEATOutput/graphs/NEATSpeciation' + fileNumber + '.svg')
 
-    #winner.mutate(config.genome_config) think this is the way to do a mutation
+    # winner.mutate(config.genome_config) think this is the way to do a mutation
 
     winner_net = neat.nn.FeedForwardNetwork.create(winner, config)
 
+    outputNameGenome = "NEATGenome" + fileNumber + ".pkl"
+    outputNamePopulation = "NEATStats" + fileNumber + ".pkl"
 
-    outputName = "neat" + fileNumber + ".pkl"
-
-    with open('NEATOutput/' + outputName, 'wb') as output:
+    with open('NEATOutput/bestGenomes/' + outputNameGenome, 'wb') as output:
         pickle.dump(winner, output, pickle.HIGHEST_PROTOCOL)
-    draw_net(winner_net, filename="NEATOutput/neatWINNER" + fileNumber)
-
+    with open('NEATOutput/stats/' + outputNamePopulation, 'wb') as output:
+        pickle.dump(stats, output, pickle.HIGHEST_PROTOCOL)
+    draw_net(winner_net, filename="NEATOutput/graphs/NEATWINNER" + fileNumber)
 
     controller = Controller(tripod_gait, body_height=0.15, velocity=0.5, crab_angle=-1.57, ann=winner_net,
                             printangles=True)

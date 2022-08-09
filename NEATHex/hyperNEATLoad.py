@@ -35,9 +35,21 @@ HIDDEN_COORDINATES = [[(0.2, 0.5), (0.4, 0.5), (0.6, 0.5),
 SUBSTRATE = Substrate(
     INPUT_COORDINATES, OUTPUT_COORDINATES, HIDDEN_COORDINATES)
 ACTIVATIONS = len(HIDDEN_COORDINATES) + 2
-with open("hyperneat5.pkl", 'rb') as f:
-    CPPN = pickle.load(f)
+
+# Configure cppn using config file
+CONFIG = neat.config.Config(neat.genome.DefaultGenome, neat.reproduction.DefaultReproduction,
+                            neat.species.DefaultSpeciesSet, neat.stagnation.DefaultStagnation,
+                            'config-cppn')
+
+with open("hyperNEATStats0.pkl", 'rb') as f:
+    stats = pickle.load(f)
+    winner = stats.best_genome()
+    CPPN = neat.nn.FeedForwardNetwork.create(winner, CONFIG)
     WINNER_NET = create_phenotype_network(CPPN, SUBSTRATE)
+
+# with open("hyperneat6.pkl", 'rb') as f:
+#     CPPN = pickle.load(f)
+#     WINNER_NET = create_phenotype_network(CPPN, SUBSTRATE)
 
 # Create and run controller
 controller = Controller(tripod_gait, body_height=0.15, velocity=0.5, crab_angle=-1.57, ann=WINNER_NET, activations=ACTIVATIONS)

@@ -96,8 +96,18 @@ def run(gens):
 
 
 if __name__ == '__main__':
-    if os.path.exists("HyperNEATOutput") and os.path.isdir("HyperNEATOutput"):
-        shutil.rmtree("HyperNEATOutput")
+    if not os.path.exists("HyperNEATOutput"):
+        os.mkdir("HyperNEATOutput")
+        if not os.path.exists("HyperNEATOutput/genomeFitness"):
+            os.mkdir("HyperNEATOutput/genomeFitness")
+        if not os.path.exists("HyperNEATOutput/graphs"):
+            os.mkdir("HyperNEATOutput/graphs")
+        if not os.path.exists("HyperNEATOutput/bestGenomes"):
+            os.mkdir("HyperNEATOutput/bestGenomes")
+        if not os.path.exists("HyperNEATOutput/stats"):
+            os.mkdir("HyperNEATOutput/stats")
+        if not os.path.exists("HyperNEATOutput/CPPNS"):
+            os.mkdir("HyperNEATOutput/CPPNS")
     numRuns = int(sys.argv[1])
     startIndex = int(sys.argv[2])
     endIndex = int(sys.argv[3])
@@ -107,9 +117,9 @@ if __name__ == '__main__':
         print("This is the winner!!!")
         print(type(WINNER))
         print('\nBest genome:\n{!s}'.format(WINNER))
-        STATS.save_genome_fitness(delimiter=',', filename='HyperNEATOutput/fitness_history' + i + '.csv')
-        vz.plot_stats(STATS, ylog=False, view=True, filename='HyperNEATOutput/avg_fitness' + i + '.svg')
-        vz.plot_species(STATS, view=True, filename='HyperNEATOutput/speciation' + i + '.svg')
+        STATS.save_genome_fitness(delimiter=',', filename='HyperNEATOutput/genomeFitness/HyperNEATFitnessHistory' + i + '.csv')
+        vz.plot_stats(STATS, ylog=False, view=True, filename='HyperNEATOutput/graphs/HyperNEATAverageFitness' + i + '.svg')
+        vz.plot_species(STATS, view=True, filename='HyperNEATOutput/graphs/HyperNEATSpeciation' + i + '.svg')
 
         # CPPN for winner
         CPPN = neat.nn.FeedForwardNetwork.create(WINNER, CONFIG)
@@ -117,10 +127,20 @@ if __name__ == '__main__':
         #    CPPN = pickle.load(f)
         ## ANN for winner
         WINNER_NET = create_phenotype_network(CPPN, SUBSTRATE)
-        outputName = "hyperneat" + i + ".pkl"
 
-        with open('HyperNEATOutput/' + outputName, 'wb') as output:
+        outputNameGenome = "hyperNEATGenome" + i + ".pkl"
+        outputNameStats = "hyperNEATStats" + i + ".pkl"
+        outputNameCPPN = "hyperNEATCPPN" + i + ".pkl"
+
+        ## Save HyperNEAT Genome to pickle file
+        with open('HyperNEATOutput/bestGenomes/' + outputNameGenome, 'wb') as output:
+            pickle.dump(WINNER, output, pickle.HIGHEST_PROTOCOL)
+        ## Save HyperNEAT Stats to pickle file
+        with open('HyperNEATOutput/stats/' + outputNameStats, 'wb') as output:
+            pickle.dump(STATS, output, pickle.HIGHEST_PROTOCOL)
+        ## Save HyperNEATCPPN to pickle file
+        with open('HyperNEATOutput/CPPNS/' + outputNameCPPN, 'wb') as output:
             pickle.dump(CPPN, output, pickle.HIGHEST_PROTOCOL)
-        draw_net(CPPN, filename="HyperNEATOutput/hyperneatCPPN" + i)
-        draw_net(WINNER_NET, filename="HyperNEATOutput/hyperneatWINNER" + i)
+        draw_net(CPPN, filename="HyperNEATOutput/graphs/hyperNEATCPPN" + i)
+        draw_net(WINNER_NET, filename="HyperNEATOutput/graphs/hyperNEATWINNER" + i)
 
