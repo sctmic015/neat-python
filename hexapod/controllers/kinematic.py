@@ -51,6 +51,14 @@ class Controller:
 
 		params = np.array(params).reshape(6, 5)
 
+		self.min0 = 100
+		self.max0 = -100
+		self.min1 = 100
+		self.max1 = -100
+		self.min2 = 100
+		self.max2 = -100
+		self.count = 0
+
 
 		# Generate trajectories for each leg
 		for leg_index in range(6):
@@ -67,17 +75,33 @@ class Controller:
 			self.angles = np.append(self.angles, joint_angles, axis=0)
 			self.speeds = np.append(self.speeds, joint_speeds, axis=0)
 
+		print(self.angles[:, 0])
+
 
 	def joint_angles(self, t):
 		k = int(((t % self.period) / self.period) * self.array_dim)
+		print(k)
 		out = self.angles[:, k]
-		smallest = 100
-		largest = -100
-		for i in range(len(out)):
-			if (i != 10):
-				out[i] = 0
-			else:
-				out[i] = 0.63
+		if out[0] < self.min0:
+			self.min0 = out[0]
+		if out[0] > self.max0:
+			self.max0 = out[0]
+		if out[1] < self.min1:
+			self.min1 = out[1]
+		if out[1] > self.max1:
+			self.max1 = out[1]
+		if out[2] < self.min2:
+			self.min2 = out[2]
+		if out[2] > self.max2:
+			self.max2 = out[2]
+
+		if int(k) == 239:
+			print(self.min0)
+			print(self.max0)
+			print(self.min1)
+			print(self.max1)
+			print(self.min2)
+			print(self.max2)
 
 		return out
 

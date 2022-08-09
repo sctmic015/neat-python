@@ -78,9 +78,6 @@ class Controller:
 
         initial_angle = self.angles[:, 0]
         self.current_angle = initial_angle
-        self.aq = anglequee()
-        self.aq.add(self.current_angle)
-
 
     def joint_angles(self, t):
 
@@ -89,7 +86,6 @@ class Controller:
         input_angles = np.append(self.current_angle, sinewave)
         input_angles = np.append(input_angles, coswave)
         current_angles = self.ann.activate(input_angles)
-        # Current theory is that the for loop makes the program to slow to do NEAT
         for i in range(len(current_angles)):
             if i % 3 == 0:
                 current_angles[i] = (current_angles[i] * 1.5708 * 2) - 1.5708
