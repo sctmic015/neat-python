@@ -14,16 +14,16 @@ config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
                      neat.DefaultSpeciesSet, neat.DefaultStagnation,
                      'config-feedforward')
 
-with open("NEATStats1.pkl", 'rb') as f:
-    stats = pickle.load(f)
-    winner = stats.best_genome()
-    winner_net = neat.nn.FeedForwardNetwork.create(winner, config)
-
-# with open("neat4.pkl", 'rb') as f:
-#     winner = pickle.load(f)
-#     winner.mutate(config.genome_config)
-#     print(winner.compute_full_connections(config.genome_config, direct=True))
+# with open("NEATStats1.pkl", 'rb') as f:
+#     stats = pickle.load(f)
+#     winner = stats.best_genome()
 #     winner_net = neat.nn.FeedForwardNetwork.create(winner, config)
+
+with open("neatGenome3.pkl", 'rb') as f:
+    winner = pickle.load(f)
+    winner.mutate(config.genome_config)
+    print(winner.compute_full_connections(config.genome_config, direct=True))
+    winner_net = neat.nn.FeedForwardNetwork.create(winner, config)
 
 controller = Controller(tripod_gait, body_height=0.15, velocity=0.5, crab_angle=-1.57, ann=winner_net,
                             printangles=True)

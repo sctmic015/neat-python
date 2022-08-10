@@ -1,4 +1,6 @@
 import math
+import sys
+
 import neat
 
 import numpy as np
@@ -77,6 +79,8 @@ class Controller:
             self.speeds = np.append(self.speeds, joint_speeds, axis=0)
 
         initial_angle = self.angles[:, 0]
+        self.min = 1000
+        self.max = -1000
         self.current_angle = initial_angle
 
     def joint_angles(self, t):
@@ -87,12 +91,19 @@ class Controller:
         input_angles = np.append(input_angles, coswave)
         current_angles = self.ann.activate(input_angles)
         for i in range(len(current_angles)):
+            if (current_angles[i] > 1):
+                print("You're fucked")
+                sys.exit()
+            if (current_angles[i] < 0):
+                print("You're fucked")
+                sys.exit()
+        for i in range(len(current_angles)):
             if i % 3 == 0:
-                current_angles[i] = (current_angles[i] * 1.5708 * 2) - 1.5708
+                current_angles[i] = (current_angles[i] * 0.91 * 2) - 0.91
             elif i % 3 == 1:
-                current_angles[i] = (current_angles[i] * 0.63 * 2) - 0.63
+                current_angles[i] = (((current_angles[i] -0)*(0.64+0.2))/(1-0))-0.2
             else:
-                current_angles[i] = (current_angles[i] * 2.9044) - 2.9044
+                current_angles[i] = (((current_angles[i] -0)*(-0.72+2.11))/(1-0))-2.11
 
         self.current_angle = current_angles
 

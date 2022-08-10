@@ -10,7 +10,7 @@ import sys
 import visualize as vz
 import shutil
 
-from hexapod.controllers.hyperNEATController import Controller, tripod_gait, reshape
+from hexapod.controllers.hyperNEATController import Controller, tripod_gait, reshape, stationary
 from hexapod.simulator import Simulator
 from pureples.hyperneat import create_phenotype_network
 from pureples.shared import Substrate, run_hyper
@@ -22,7 +22,7 @@ def evaluate_gait_parallel(genome, config, duration = 5):
     net = create_phenotype_network(cppn, SUBSTRATE)
     # Reset net
 
-    leg_params = np.array(tripod_gait).reshape(6, 5)
+    leg_params = np.array(stationary).reshape(6, 5)
     # Set up controller
     try:
         controller = Controller(leg_params, body_height=0.15, velocity=0.5, period=1.0, crab_angle=-np.pi / 6,
@@ -132,6 +132,7 @@ if __name__ == '__main__':
     outputNameStats = "hyperNEATStats" + fileNumber + ".pkl"
     outputNameCPPN = "hyperNEATCPPN" + fileNumber + ".pkl"
 
+
     ## Save HyperNEAT Genome to pickle file
     with open('HyperNEATOutput/bestGenomes/' + outputNameGenome, 'wb') as output:
         pickle.dump(WINNER, output, pickle.HIGHEST_PROTOCOL)
@@ -146,7 +147,7 @@ if __name__ == '__main__':
 
 
     # Create and run controller
-    controller = Controller(tripod_gait, body_height=0.15, velocity=0.5, crab_angle=-1.57, ann=WINNER_NET, activations=ACTIVATIONS)
+    controller = Controller(stationary, body_height=0.15, velocity=0.5, crab_angle=-1.57, ann=WINNER_NET, activations=ACTIVATIONS)
     simulator = Simulator(controller, follow=True, visualiser=True, collision_fatal=False, failed_legs=[0])
 
 
