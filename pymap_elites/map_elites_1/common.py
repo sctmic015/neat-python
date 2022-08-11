@@ -47,6 +47,7 @@ import random
 from collections import defaultdict
 from sklearn.cluster import KMeans
 import neat
+import pickle
 
 config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
                      neat.DefaultSpeciesSet, neat.DefaultStagnation,
@@ -239,5 +240,5 @@ def __save_archive(archive, gen):
             write_array(k.desc, f)
             #write_array(k.x, f)
             f.write("\n")
-        # with open(filenamePickle, 'wb') as output:
-        #     pickle.dump(x, output, pickle.HIGHEST_PROTOCOL)
+            with open(filenamePickle, 'wb') as output:
+                pickle.dump(k.x, output, pickle.HIGHEST_PROTOCOL)

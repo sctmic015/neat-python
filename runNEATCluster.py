@@ -90,11 +90,12 @@ if __name__ == '__main__':
     numRuns = int(sys.argv[1])
     startIndex = int(sys.argv[2])
     endIndex = int(sys.argv[3])
-    for i in range(startIndex, endIndex):
+    for i in range(startIndex, endIndex+1):
         winner, stats = runNeat(numRuns)
 
         print("This is the winner!!!")
         print('\nBest genome:\n{!s}'.format(winner))
+        i = str(i)
         stats.save_genome_fitness(delimiter=',', filename='NEATOutput/genomeFitness/NEATFitnessHistory' + i + '.csv')
         vz.plot_stats(stats, ylog=False, view=True, filename='NEATOutput/graphs/NEATAverageFitness' + i + '.svg')
         vz.plot_species(stats, view=True, filename='NEATOutput/graphs/NEATSpeciation' + i + '.svg')
