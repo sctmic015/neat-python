@@ -45,7 +45,7 @@ node_add_prob           = 0.9
 node_delete_prob        = 0.1
 
 # network parameters
-num_hidden              = 4
+num_hidden              = 0
 num_inputs              = 5
 num_outputs             = 1
 
