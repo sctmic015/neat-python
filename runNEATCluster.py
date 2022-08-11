@@ -86,7 +86,7 @@ if __name__ == '__main__':
         if not os.path.exists("NEATOutput/bestGenomes"):
             os.mkdir("NEATOutput/bestGenomes")
         if not os.path.exists("NEATOutput/stats"):
-            os.mkdir("NeatOutput/stats")
+            os.mkdir("NEATOutput/stats")
     numRuns = int(sys.argv[1])
     startIndex = int(sys.argv[2])
     endIndex = int(sys.argv[3])
