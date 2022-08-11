@@ -112,14 +112,11 @@ def makeGenomeCopy(genome, config, numCopies):
 
 
 if __name__ == '__main__':
-    with open("HyperNEATOutput/stats/hyperNEATStats8.pkl", 'rb') as f:
+    with open("hyperNEATStats11.pkl", 'rb') as f:
         stats = pickle.load(f)
 
-    genomes = stats.best_genomes(10)
-    winner = stats.best_genome()
-    print(evaluate_gait(winner, 5))
-    winner.mutate(config.genome_config)
-    print(evaluate_gait(winner, 5))
+    genomes = stats.best_unique_genomes(50)
+    print(len(genomes))
     #print(winner)
 
 
@@ -128,7 +125,7 @@ if __name__ == '__main__':
             # more of this -> higher-quality CVT
             "cvt_samples": 1000000,
             # we evaluate in batches to parallelise
-            "batch_size": 1000,
+            "batch_size": 200,
             # proportion of niches to be filled before starting (400)
             "random_init": 0.01,
             # batch for random initialization
@@ -145,5 +142,5 @@ if __name__ == '__main__':
         }
 
 
-    archive = cvt_map_elites.compute(6, genomes, evaluate_gait, n_niches=200, max_evals=20000,
+    archive = cvt_map_elites.compute(6, genomes, evaluate_gait, n_niches=200, max_evals=2000,
                                      log_file=open('log.dat', 'w'), params=params, variation_operator=cm.neatMutation)

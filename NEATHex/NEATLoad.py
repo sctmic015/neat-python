@@ -19,7 +19,7 @@ config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
 #     winner = stats.best_genome()
 #     winner_net = neat.nn.FeedForwardNetwork.create(winner, config)
 
-with open("neatGenome3.pkl", 'rb') as f:
+with open("NEATGenome20.pkl", 'rb') as f:
     winner = pickle.load(f)
     winner.mutate(config.genome_config)
     print(winner.compute_full_connections(config.genome_config, direct=True))

@@ -232,7 +232,7 @@ def __save_archive(archive, gen):
         for i in a:
             f.write(str(i) + ' ')
     filename = 'archive_' + str(gen) + '.dat'
-    filenamePickle = 'archive_genome' + str(gen) + '.dat'
+    filenamePickle = 'archive_genome' + str(gen) + '.pkl'
     with open(filename, 'w') as f:
         for k in archive.values():
             f.write(str(k.fitness) + ' ')
