@@ -10,7 +10,7 @@ import sys
 import visualize as vz
 import shutil
 
-from hexapod.controllers.hyperNEATController import Controller, tripod_gait, reshape
+from hexapod.controllers.hyperNEATController import Controller, stationary, reshape
 from hexapod.simulator import Simulator
 from pureples.hyperneat import create_phenotype_network
 from pureples.shared import Substrate, run_hyper
@@ -22,7 +22,7 @@ def evaluate_gait_parallel(genome, config, duration = 5):
     net = create_phenotype_network(cppn, SUBSTRATE)
     # Reset net
 
-    leg_params = np.array(tripod_gait).reshape(6, 5)
+    leg_params = np.array(stationary).reshape(6, 5)
     # Set up controller
     try:
         controller = Controller(leg_params, body_height=0.15, velocity=0.5, period=1.0, crab_angle=-np.pi / 6,
