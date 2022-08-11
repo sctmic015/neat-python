@@ -231,10 +231,13 @@ def __save_archive(archive, gen):
         for i in a:
             f.write(str(i) + ' ')
     filename = 'archive_' + str(gen) + '.dat'
+    filenamePickle = 'archive_genome' + str(gen) + '.dat'
     with open(filename, 'w') as f:
         for k in archive.values():
             f.write(str(k.fitness) + ' ')
             write_array(k.centroid, f)
             write_array(k.desc, f)
-            write_array(k.x, f)
+            #write_array(k.x, f)
             f.write("\n")
+        # with open(filenamePickle, 'wb') as output:
+        #     pickle.dump(x, output, pickle.HIGHEST_PROTOCOL)

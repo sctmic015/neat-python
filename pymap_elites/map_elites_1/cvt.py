@@ -71,7 +71,7 @@ def __evaluate(t):
     return cm.Species(z, desc, fit)
 
 # map-elites algorithm (CVT variant)
-def compute(dim_map, dim_x, f,
+def compute(dim_map, genomes, f,
             n_niches=1000,
             max_evals=1e5,
             params=cm.default_params,
@@ -99,28 +99,35 @@ def compute(dim_map, dim_x, f,
 
     # main loop
     while (n_evals < max_evals):
+        print(n_evals)
         to_evaluate = []
         # random initialization
-        if len(archive) <= params['random_init'] * n_niches:
-            for i in range(0, params['random_init_batch']):
-                x = np.random.uniform(low=params['min'], high=params['max'], size=dim_x)     ## Where the map is initialised, this is where I would pass in the high performing gaits
+        #if len(archive) <= params['random_init'] * n_niches:
+        if (n_evals == 0):
+            for i in range(0, len(genomes)):
+
+                # x = np.random.uniform(low=params['min'], high=params['max'], size=dim_x)     ## Where the map is initialised, this is where I would pass in the high performing gaits
+                x = genomes[i]
                 to_evaluate += [(x, f)]
         else:  # variation/selection loop
             keys = list(archive.keys())
             # we select all the parents at the same time because randint is slow
             rand1 = np.random.randint(len(keys), size=params['batch_size'])
+            print("rand1")
+            print(rand1)
             rand2 = np.random.randint(len(keys), size=params['batch_size'])
             for n in range(0, params['batch_size']):
                 # parent selection
                 x = archive[keys[rand1[n]]]
                 y = archive[keys[rand2[n]]]
                 # copy & add variation
-                z = variation_operator(x.x, y.x, params)
+                z = variation_operator(x.x)
                 to_evaluate += [(z, f)]
         # evaluation of the fitness for to_evaluate
-        s_list = cm.parallel_eval(__evaluate, to_evaluate, pool, params)
+        s_list = cm.parallel_eval(__evaluate, to_evaluate, pool, params)    ## Problem here
         # natural selection
         for s in s_list:
+            print("Adding to archive")
             __add_to_archive(s, s.desc, archive, kdt)
         # count evals
         n_evals += len(to_evaluate)

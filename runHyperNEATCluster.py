@@ -112,11 +112,12 @@ if __name__ == '__main__':
     startIndex = int(sys.argv[2])
     endIndex = int(sys.argv[3])
 
-    for i in range(startIndex, endIndex):
+    for i in range(startIndex, endIndex+1):
         WINNER, STATS = run(numRuns)  # Only relevant to look at the winner.
         print("This is the winner!!!")
         print(type(WINNER))
         print('\nBest genome:\n{!s}'.format(WINNER))
+        i = str(i)
         STATS.save_genome_fitness(delimiter=',', filename='HyperNEATOutput/genomeFitness/HyperNEATFitnessHistory' + i + '.csv')
         vz.plot_stats(STATS, ylog=False, view=True, filename='HyperNEATOutput/graphs/HyperNEATAverageFitness' + i + '.svg')
         vz.plot_species(STATS, view=True, filename='HyperNEATOutput/graphs/HyperNEATSpeciation' + i + '.svg')

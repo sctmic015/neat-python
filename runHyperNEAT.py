@@ -114,6 +114,9 @@ if __name__ == '__main__':
     numRuns = int(sys.argv[1])
     fileNumber = (sys.argv[2])
     WINNER, STATS = run(numRuns)  # Only relevant to look at the winner.
+    connections = [cg.key for cg in WINNER.connections.values() if cg.enabled]
+    for i in connections:
+        print(i)
     print("This is the winner!!!")
     print(type(WINNER))
     print('\nBest genome:\n{!s}'.format(WINNER))
