@@ -101,7 +101,7 @@ class Controller:
             elif i % 3 == 1:
                 current_angles[i] = (((current_angles[i] -0)*(0.64+0.2))/(1-0))-0.2
             else:
-                current_angles[i] = (((current_angles[i] -0)*(-0.72+2.11))/(1-0))-2.11
+                current_angles[i] = (((current_angles[i] -0)*(-1.4+2.11))/(1-0))-2.11
 
         # for i in range(len(current_angles)):
         #     if i % 3 == 0:
