@@ -99,7 +99,7 @@ class Controller:
                 sys.exit()
         for i in range(len(current_angles)):
             if i % 3 == 0:
-                current_angles[i] = (current_angles[i] * 0.91 * 2) - 0.91
+                current_angles[i] = (current_angles[i] * 1.04 * 2) - 1.04
             elif i % 3 == 1:
                 current_angles[i] = (((current_angles[i] -0)*(0.64+0.2))/(1-0))-0.2
             else:
