@@ -41,7 +41,7 @@ CONFIG = neat.config.Config(neat.genome.DefaultGenome, neat.reproduction.Default
                             neat.species.DefaultSpeciesSet, neat.stagnation.DefaultStagnation,
                             'config-cppn')
 
-with open("hyperNEATStats25.pkl", 'rb') as f:
+with open("hyperNEATStats0.pkl", 'rb') as f:
     stats = pickle.load(f)
     winner = stats.best_genome()
     CPPN = neat.nn.FeedForwardNetwork.create(winner, CONFIG)
