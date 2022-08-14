@@ -1,0 +1,21 @@
+#!/bin/bash
+#PBS -l select=1:ncpus=24:mpiprocs=24
+#PBS -P CSCI1142
+#PBS -q smp
+#PBS -l walltime=10:00:00
+#PBS -o /mnt/lustre/users/mscott/neat-python/job.out
+#PBS -e /mnt/lustre/users/mscott/neat-python/job.err
+#PBS -m abe
+#PBS -M sctmic015@myuct.ac.za
+#PBS -N neat0
+ulimit -s unlimited
+
+module purge
+module load chpc/python/anaconda/3-2021.11
+
+cd /mnt/lustre/users/mscott/neat-python/
+nproc=`cat $PBS_NODEFILE | wc -l`
+echo nproc is $nproc
+cat $PBS_NODEFILE
+
+python3 runNEAT.py 2000 4

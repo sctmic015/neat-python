@@ -39,8 +39,8 @@
 
 import math
 import numpy as np
-import multiprocessing
-
+import multiprocessing    # Comment
+# from mpi4py.futures import MPIPoolExecutor    # Uncomment
 # from scipy.spatial import cKDTree : TODO -- faster?
 from sklearn.neighbors import KDTree
 
@@ -76,6 +76,7 @@ def compute(dim_map, genomes, f,
             max_evals=1e5,
             params=cm.default_params,
             log_file=None,
+            archive_file = None,
             variation_operator=cm.variation):
     """CVT MAP-Elites
        Vassiliades V, Chatzilygeroudis K, Mouret JB. Using centroidal voronoi tessellations to scale up the multidimensional archive of phenotypic elites algorithm. IEEE Transactions on Evolutionary Computation. 2017 Aug 3;22(4):623-30.
@@ -84,8 +85,9 @@ def compute(dim_map, genomes, f,
 
     """
     # setup the parallel processing pool
-    num_cores = multiprocessing.cpu_count()
-    pool = multiprocessing.Pool(num_cores)
+    num_cores = multiprocessing.cpu_count()     # Comment
+    pool = multiprocessing.Pool(num_cores)     # Comment
+    # pool = MPIPoolExecutor()    # Uncomment
 
     # create the CVT
     c = cm.cvt(n_niches, dim_map,
@@ -115,11 +117,11 @@ def compute(dim_map, genomes, f,
             rand1 = np.random.randint(len(keys), size=params['batch_size'])
             print("rand1")
             print(rand1)
-            rand2 = np.random.randint(len(keys), size=params['batch_size'])
+            #rand2 = np.random.randint(len(keys), size=params['batch_size'])
             for n in range(0, params['batch_size']):
                 # parent selection
                 x = archive[keys[rand1[n]]]
-                y = archive[keys[rand2[n]]]
+                #y = archive[keys[rand2[n]]]
                 # copy & add variation
                 z = variation_operator(x.x)
                 to_evaluate += [(z, f)]
@@ -136,7 +138,7 @@ def compute(dim_map, genomes, f,
         # write archive
         if b_evals >= params['dump_period'] and params['dump_period'] != -1:
             print("[{}/{}]".format(n_evals, int(max_evals)), end=" ", flush=True)
-            cm.__save_archive(archive, n_evals)
+            cm.__save_archive(archive, n_evals, archive_file)
             b_evals = 0
         # write log
         if log_file != None:
@@ -145,5 +147,5 @@ def compute(dim_map, genomes, f,
                     fit_list.max(), np.mean(fit_list), np.median(fit_list),
                     np.percentile(fit_list, 5), np.percentile(fit_list, 95)))
             log_file.flush()
-    cm.__save_archive(archive, n_evals)
+    cm.__save_archive(archive, n_evals, archive_file)
     return archive

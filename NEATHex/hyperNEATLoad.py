@@ -53,7 +53,7 @@ with open("hyperNEATStats0.pkl", 'rb') as f:
 
 # Create and run controller
 controller = Controller(tripod_gait, body_height=0.15, velocity=0.5, crab_angle=-1.57, ann=WINNER_NET, activations=ACTIVATIONS)
-simulator = Simulator(controller, follow=True, visualiser=True, collision_fatal=False, failed_legs=[])
+simulator = Simulator(controller, follow=True, visualiser=True, collision_fatal=True, failed_legs=[])
 
 
 while True:

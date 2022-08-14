@@ -39,7 +39,7 @@ def evaluate_gait_parallel(genome, config, duration=5):
         controller = Controller(leg_params, body_height=0.15, velocity=0.5, period=1.0, crab_angle=-np.pi / 6, ann=net)
     except:
         return 0, np.zeros(6)
-    simulator = Simulator(controller=controller, visualiser=False, collision_fatal=False)
+    simulator = Simulator(controller=controller, visualiser=False, collision_fatal=True)
     # contact_sequence = np.full((6, 0), False)
     difference = 0
     for t in np.arange(0, duration, step=simulator.dt):

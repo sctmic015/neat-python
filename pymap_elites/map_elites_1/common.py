@@ -40,7 +40,8 @@
 
 import math
 import numpy as np
-import multiprocessing
+import multiprocessing # Must comment
+#from mpi4py.futures import MPIPoolExecutor  # Must uncomment
 from pathlib import Path
 import sys
 import random
@@ -181,7 +182,7 @@ def variation(x, z, params):
     return y
 
 def __centroids_filename(k, dim):
-    return 'centroids_' + str(k) + '_' + str(dim) + '.dat'
+    return 'centroids/centroids_' + str(k) + '_' + str(dim) + '.dat'
 
 
 def __write_centroids(centroids):
@@ -217,28 +218,31 @@ def cvt(k, dim, samples, cvt_use_cache=True):
 def make_hashable(array):
     return tuple(map(float, array))
 
-
 def parallel_eval(evaluate_function, to_evaluate, pool, params):
     if params['parallel'] == True:
-        s_list = pool.map(evaluate_function, to_evaluate)
+        s_list = pool.map(evaluate_function, to_evaluate)    # Comment
+        # s_list = pool.map(evaluate_function, to_evaluate, chunksize=10)  # Uncomment
     else:
         s_list = map(evaluate_function, to_evaluate)
     return list(s_list)
 
+
 # format: fitness, centroid, desc, genome \n
 # fitness, centroid, desc and x are vectors
-def __save_archive(archive, gen):
+def __save_archive(archive, gen, archive_file):
     def write_array(a, f):
         for i in a:
             f.write(str(i) + ' ')
-    filename = 'archive_' + str(gen) + '.dat'
-    filenamePickle = 'archive_genome' + str(gen) + '.pkl'
+    filename = archive_file + str(gen) + '.dat'
+    filenamePickle = archive_file + '_genome' + str(gen) + '.pkl'
+    genomes = []
     with open(filename, 'w') as f:
         for k in archive.values():
             f.write(str(k.fitness) + ' ')
             write_array(k.centroid, f)
             write_array(k.desc, f)
             #write_array(k.x, f)
+            genomes += [k.x]
             f.write("\n")
-            with open(filenamePickle, 'wb') as output:
-                pickle.dump(k.x, output, pickle.HIGHEST_PROTOCOL)
+    with open(filenamePickle, 'wb') as output:
+        pickle.dump(genomes, output, pickle.HIGHEST_PROTOCOL)
