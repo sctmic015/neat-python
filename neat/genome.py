@@ -105,7 +105,7 @@ class DefaultGenomeConfig(object):
         write_pretty_params(f, self, [p for p in self._params
                                       if 'initial_connection' not in p.name])
 
-    def get_new_node_key(self, node_dict):
+    def get_new_node_key(self, node_dict):   ##
         if self.node_indexer is None:
             if node_dict:
                 self.node_indexer = count(max(list(node_dict)) + 1)
@@ -114,6 +114,8 @@ class DefaultGenomeConfig(object):
 
         new_id = next(self.node_indexer)
 
+        if new_id not in node_dict:
+            print(new_id)
         assert new_id not in node_dict
 
         return new_id

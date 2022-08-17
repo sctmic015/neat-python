@@ -46,7 +46,7 @@ def evaluate_gait(x, duration=5):
 
 def load_genomes():
     genomes = []
-    for i in range(20):
+    for i in range(10):
         filename = 'NEATOutput/stats/NEATStats' + str(i) + '.pkl'
         with open(filename, 'rb') as f:
             stats = pickle.load(f)
@@ -64,13 +64,13 @@ if __name__ == '__main__':
             # more of this -> higher-quality CVT
             "cvt_samples": 1000000,
             # we evaluate in batches to parallelise
-            "batch_size": 2390,
+            "batch_size": 20,
             # proportion of niches to be filled before starting (400)
             "random_init": 0.01,
             # batch for random initialization
             "random_init_batch": 2390,
             # when to write results (one generation = one batch)
-            "dump_period": 50000,
+            "dump_period": 0.1e6,   # Change that
             # do we use several cores?
             "parallel": True,
             # do we cache the result of CVT and reuse?
@@ -83,6 +83,7 @@ if __name__ == '__main__':
         os.mkdir("mapElitesOutput/NEAT/" + runNum + "_" + str(mapSize))
     if not os.path.exists("mapElitesOutput/NEAT/" + runNum + "_" + str(mapSize) + "archive"):
         os.mkdir("mapElitesOutput/NEAT/" + runNum + "_" + str(mapSize) + "archive")
-    archive = cvt_map_elites.compute(6, genomes, evaluate_gait, n_niches=mapSize, max_evals=1e6,
+
+    archive = cvt_map_elites.compute(6, genomes, evaluate_gait, n_niches=mapSize, max_evals=12e6,
                                      log_file=open('mapElitesOutput/NEAT/' + runNum + "_" + str(mapSize) + '/log.dat', 'w'), archive_file='mapElitesOutput/NEAT/' + runNum + "_" + str(mapSize) + "archive" + '/archive', params=params,
                                      variation_operator=cm.neatMutation)
