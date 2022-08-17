@@ -39,8 +39,9 @@
 
 import math
 import numpy as np
+import time
 import multiprocessing    # Comment
-# from mpi4py.futures import MPIPoolExecutor    # Uncomment
+#from mpi4py.futures import MPIPoolExecutor    # Uncomment
 # from scipy.spatial import cKDTree : TODO -- faster?
 from sklearn.neighbors import KDTree
 
@@ -87,13 +88,15 @@ def compute(dim_map, genomes, f,
     # setup the parallel processing pool
     num_cores = multiprocessing.cpu_count()     # Comment
     pool = multiprocessing.Pool(num_cores)     # Comment
-    # pool = MPIPoolExecutor()    # Uncomment
+    #pool = MPIPoolExecutor()    # Uncomment
 
     # create the CVT
+    start_time = time.time()
     c = cm.cvt(n_niches, dim_map,
               params['cvt_samples'], params['cvt_use_cache'])
     kdt = KDTree(c, leaf_size=30, metric='euclidean')
     cm.__write_centroids(c)
+    print("Time Taken for centroid: ", time.time() - start_time)
 
     archive = {} # init archive (empty)
     n_evals = 0 # number of evaluations since the beginning
@@ -101,7 +104,9 @@ def compute(dim_map, genomes, f,
 
     # main loop
     while (n_evals < max_evals):
+
         print(n_evals)
+        start_time = time.time()
         to_evaluate = []
         # random initialization
         #if len(archive) <= params['random_init'] * n_niches:
@@ -147,5 +152,6 @@ def compute(dim_map, genomes, f,
                     fit_list.max(), np.mean(fit_list), np.median(fit_list),
                     np.percentile(fit_list, 5), np.percentile(fit_list, 95)))
             log_file.flush()
+        print("Time taken for one batch: ", time.time() - start_time)
     cm.__save_archive(archive, n_evals, archive_file)
     return archive

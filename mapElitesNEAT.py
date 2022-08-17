@@ -1,3 +1,5 @@
+import sys
+
 from hexapod.controllers.NEATController import Controller, tripod_gait, reshape, stationary
 from hexapod.simulator import Simulator
 import pymap_elites.map_elites_1.cvt as cvt_map_elites
@@ -5,6 +7,7 @@ import numpy as np
 import neat
 import pymap_elites.map_elites_1.common as cm
 import pickle
+import os
 
 config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
                      neat.DefaultSpeciesSet, neat.DefaultStagnation,
@@ -53,19 +56,21 @@ def load_genomes():
     return genomes
 
 if __name__ == '__main__':
+    mapSize = int(sys.argv[1])
+    runNum = (sys.argv[2])
     genomes = load_genomes()
     params = \
         {
             # more of this -> higher-quality CVT
             "cvt_samples": 1000000,
             # we evaluate in batches to parallelise
-            "batch_size": 50,
+            "batch_size": 2390,
             # proportion of niches to be filled before starting (400)
             "random_init": 0.01,
             # batch for random initialization
             "random_init_batch": 2390,
             # when to write results (one generation = one batch)
-            "dump_period": 5e6,
+            "dump_period": 50000,
             # do we use several cores?
             "parallel": True,
             # do we cache the result of CVT and reuse?
@@ -74,7 +79,10 @@ if __name__ == '__main__':
             "min": 0,
             "max": 1,
         }
-
-    archive = cvt_map_elites.compute(6, genomes, evaluate_gait, n_niches=500, max_evals=500,
-                                     log_file=open('mapElitesOutput/NEAT/log1.dat', 'w'), archive_file='mapElitesOutput/NEAT/archiveTest', params=params,
+    if not os.path.exists("mapElitesOutput/NEAT/" + runNum + "_" + str(mapSize)):
+        os.mkdir("mapElitesOutput/NEAT/" + runNum + "_" + str(mapSize))
+    if not os.path.exists("mapElitesOutput/NEAT/" + runNum + "_" + str(mapSize) + "archive"):
+        os.mkdir("mapElitesOutput/NEAT/" + runNum + "_" + str(mapSize) + "archive")
+    archive = cvt_map_elites.compute(6, genomes, evaluate_gait, n_niches=mapSize, max_evals=1e6,
+                                     log_file=open('mapElitesOutput/NEAT/' + runNum + "_" + str(mapSize) + '/log.dat', 'w'), archive_file='mapElitesOutput/NEAT/' + runNum + "_" + str(mapSize) + "archive" + '/archive', params=params,
                                      variation_operator=cm.neatMutation)

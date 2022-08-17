@@ -19,13 +19,13 @@ config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
 #     winner = stats.best_genome()
 #     winner_net = neat.nn.FeedForwardNetwork.create(winner, config)
 
-with open("NEATGenome6.pkl", 'rb') as f:
+with open(r"C:\Users\micha\PycharmProjects\neat-python\NEATOutput\bestGenomes\NEATGenome8.pkl", 'rb') as f:
     winner = pickle.load(f)
     winner_net = neat.nn.FeedForwardNetwork.create(winner, config)
 
-controller = Controller(tripod_gait, body_height=0.15, velocity=0.5, crab_angle=-1.57, ann=winner_net,
+controller = Controller(tripod_gait, body_height=0.15, velocity=0.5, crab_angle=-np.pi / 6, ann=winner_net,
                             printangles=True)
-simulator = Simulator(controller, follow=True, visualiser=True, collision_fatal=True, failed_legs=[0])
+simulator = Simulator(controller, follow=True, visualiser=True, collision_fatal=False, failed_legs=[0])
 
 
 while True:

@@ -41,7 +41,7 @@ CONFIG = neat.config.Config(neat.genome.DefaultGenome, neat.reproduction.Default
                             neat.species.DefaultSpeciesSet, neat.stagnation.DefaultStagnation,
                             'config-cppn')
 
-with open("hyperNEATStats0.pkl", 'rb') as f:
+with open(r"C:\Users\micha\PycharmProjects\neat-python\HyperNEATOutput\stats\hyperNEATStats18.pkl", 'rb') as f:
     stats = pickle.load(f)
     winner = stats.best_genome()
     CPPN = neat.nn.FeedForwardNetwork.create(winner, CONFIG)
@@ -52,8 +52,8 @@ with open("hyperNEATStats0.pkl", 'rb') as f:
 #     WINNER_NET = create_phenotype_network(CPPN, SUBSTRATE)
 
 # Create and run controller
-controller = Controller(tripod_gait, body_height=0.15, velocity=0.5, crab_angle=-1.57, ann=WINNER_NET, activations=ACTIVATIONS)
-simulator = Simulator(controller, follow=True, visualiser=True, collision_fatal=True, failed_legs=[])
+controller = Controller(tripod_gait, body_height=0.15, velocity=0.5, crab_angle=-np.pi / 6, ann=WINNER_NET, activations=ACTIVATIONS)
+simulator = Simulator(controller, follow=True, visualiser=True, collision_fatal=False, failed_legs=[1, 4])
 
 
 while True:

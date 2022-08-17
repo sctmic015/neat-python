@@ -208,7 +208,7 @@ def cvt(k, dim, samples, cvt_use_cache=True):
 
     x = np.random.rand(samples, dim)
     k_means = KMeans(init='k-means++', n_clusters=k,
-                     n_init=1, verbose=1)#,algorithm="full")
+                     n_init=1,verbose=1)#,algorithm="full")
     k_means.fit(x)
     __write_centroids(k_means.cluster_centers_)
 
@@ -221,7 +221,7 @@ def make_hashable(array):
 def parallel_eval(evaluate_function, to_evaluate, pool, params):
     if params['parallel'] == True:
         s_list = pool.map(evaluate_function, to_evaluate)    # Comment
-        # s_list = pool.map(evaluate_function, to_evaluate, chunksize=10)  # Uncomment
+        #s_list = pool.map(evaluate_function, to_evaluate, chunksize=10)  # Uncomment
     else:
         s_list = map(evaluate_function, to_evaluate)
     return list(s_list)
