@@ -242,7 +242,7 @@ def __save_archive(archive, gen, archive_file):
             write_array(k.centroid, f)
             write_array(k.desc, f)
             #write_array(k.x, f)
-            genomes += [k.x]
+            genomes += k.x
             f.write("\n")
     with open(filenamePickle, 'wb') as output:
         pickle.dump(genomes, output, pickle.HIGHEST_PROTOCOL)
