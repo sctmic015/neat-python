@@ -114,7 +114,7 @@ class DefaultGenomeConfig(object):
 
         new_id = next(self.node_indexer)
 
-        if new_id not in node_dict:
+        if new_id in node_dict:
             print(new_id)
         assert new_id not in node_dict
 
